@@ -1463,6 +1463,7 @@ void ACesium3DTileset::updateTilesetOptionsFromProperties() {
   options.maximumScreenSpaceError =
       static_cast<double>(this->MaximumScreenSpaceError);
   options.maximumCachedBytes = this->MaximumCachedBytes;
+  options.maximumBytes = this->MaximumBytes;
   options.preloadAncestors = this->PreloadAncestors;
   options.preloadSiblings = this->PreloadSiblings;
   options.forbidHoles = this->ForbidHoles;

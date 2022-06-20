@@ -269,6 +269,9 @@ public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cesium|Tile Loading")
   int64 MaximumCachedBytes = 256 * 1024 * 1024;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cesium|Tile Loading")
+  int64 MaximumBytes = std::numeric_limits<int64>::max();
+
   /**
    * The number of loading descendents a tile should allow before deciding to
    * render itself instead of waiting.
