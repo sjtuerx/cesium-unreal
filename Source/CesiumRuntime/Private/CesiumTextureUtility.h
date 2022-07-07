@@ -37,12 +37,14 @@ TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
     const TextureFilter& filter,
     const TextureGroup& group,
     bool generateMipMaps,
-    bool sRGB);
+    bool sRGB,
+    int mipBias = 0);
 
 TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
     const CesiumGltf::Model& model,
     const CesiumGltf::Texture& texture,
-    bool sRGB);
+    bool sRGB,
+    int mipBias = 0);
 
 UTexture2D* loadTextureGameThreadPart(LoadedTextureResult* pHalfLoadedTexture);
 } // namespace CesiumTextureUtility

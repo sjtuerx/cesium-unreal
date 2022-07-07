@@ -629,6 +629,9 @@ private:
       Category = "Cesium|Rendering")
   bool GenerateSmoothNormals = false;
 
+  UPROPERTY(EditAnywhere, Category = "Cesium|Rendering")
+  int32 MipBias = 0;
+
   /**
    * Whether to request and render the water mask.
    *

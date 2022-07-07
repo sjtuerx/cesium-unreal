@@ -383,7 +383,8 @@ template <class T>
 static TUniquePtr<CesiumTextureUtility::LoadedTextureResult> loadTexture(
     const CesiumGltf::Model& model,
     const std::optional<T>& gltfTexture,
-    bool sRGB) {
+    bool sRGB,
+    int32 mipBias = 0) {
   if (!gltfTexture || gltfTexture.value().index < 0 ||
       gltfTexture.value().index >= model.textures.size()) {
     if (gltfTexture && gltfTexture.value().index >= 0) {
@@ -399,7 +400,7 @@ static TUniquePtr<CesiumTextureUtility::LoadedTextureResult> loadTexture(
 
   const Texture& texture = model.textures[gltfTexture.value().index];
 
-  return loadTextureAnyThreadPart(model, texture, sRGB);
+  return loadTextureAnyThreadPart(model, texture, sRGB, mipBias);
 }
 
 static void applyWaterMask(
@@ -913,8 +914,11 @@ static void loadPrimitive(
 
   {
     CESIUM_TRACE("loadTextures");
-    primitiveResult.baseColorTexture =
-        loadTexture(model, pbrMetallicRoughness.baseColorTexture, true);
+    primitiveResult.baseColorTexture = loadTexture(
+        model,
+        pbrMetallicRoughness.baseColorTexture,
+        true,
+        options.pMeshOptions->pNodeOptions->pModelOptions->mipBias);
     primitiveResult.metallicRoughnessTexture = loadTexture(
         model,
         pbrMetallicRoughness.metallicRoughnessTexture,

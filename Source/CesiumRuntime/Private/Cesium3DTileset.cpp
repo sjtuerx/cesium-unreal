@@ -596,7 +596,7 @@ public:
     CreateGltfOptions::CreateModelOptions options;
     options.pModel = &model;
     options.alwaysIncludeTangents = this->_pActor->GetAlwaysIncludeTangents();
-
+    options.mipBias = this->_pActor->MipBias;
 #if PHYSICS_INTERFACE_PHYSX
     options.pPhysXCookingModule = this->_pPhysXCookingModule;
 #endif
@@ -1783,6 +1783,7 @@ void ACesium3DTileset::PostEditChangeProperty(
           GET_MEMBER_NAME_CHECKED(ACesium3DTileset, GenerateSmoothNormals) ||
       PropName == GET_MEMBER_NAME_CHECKED(ACesium3DTileset, EnableWaterMask) ||
       PropName == GET_MEMBER_NAME_CHECKED(ACesium3DTileset, Material) ||
+      PropName == GET_MEMBER_NAME_CHECKED(ACesium3DTileset, MipBias) ||
       PropName == GET_MEMBER_NAME_CHECKED(ACesium3DTileset, WaterMaterial) ||
       PropName ==
           GET_MEMBER_NAME_CHECKED(ACesium3DTileset, EnableOcclusionCulling) ||

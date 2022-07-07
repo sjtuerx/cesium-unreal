@@ -38,7 +38,8 @@ TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
     const TextureFilter& filter,
     const TextureGroup& group,
     bool generateMipMaps,
-    bool sRGB) {
+    bool sRGB,
+    int32 mipBias) {
 
   CESIUM_TRACE("loadTextureAnyThreadPart");
 
@@ -162,18 +163,41 @@ TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
     {
       CESIUM_TRACE("Copying image.");
 
-      // Create level 0 mip (full res image)
-      FTexture2DMipMap* pLevel0 = new FTexture2DMipMap();
-      pResult->pTextureData->Mips.Add(pLevel0);
-      pLevel0->SizeX = width;
-      pLevel0->SizeY = height;
-      pLevel0->BulkData.Lock(LOCK_READ_WRITE);
+      if (mipBias > 0) {
+        int powerOf2 = pow(2, mipBias);
+        FTexture2DMipMap* pLevel0 = new FTexture2DMipMap();
+        pResult->pTextureData->Mips.Add(pLevel0);
+        pLevel0->SizeX = width / powerOf2;
+        pLevel0->SizeY = height / powerOf2;
+        pLevel0->BulkData.Lock(LOCK_READ_WRITE);
 
-      pLastMipData = pLevel0->BulkData.Realloc(image.pixelData.size());
-      FMemory::Memcpy(
-          pLastMipData,
-          image.pixelData.data(),
-          image.pixelData.size());
+        pLastMipData = pLevel0->BulkData.Realloc(
+            image.pixelData.size() / (powerOf2 * powerOf2));
+
+        stbir_resize_uint8(
+            (const unsigned char*)(image.pixelData.data()),
+            width,
+            height,
+            0,
+            static_cast<unsigned char*>(pLastMipData),
+            pLevel0->SizeX,
+            pLevel0->SizeY,
+            0,
+            channels);
+      } else {
+        // Create level 0 mip (full res image)
+        FTexture2DMipMap* pLevel0 = new FTexture2DMipMap();
+        pResult->pTextureData->Mips.Add(pLevel0);
+        pLevel0->SizeX = width;
+        pLevel0->SizeY = height;
+        pLevel0->BulkData.Lock(LOCK_READ_WRITE);
+
+        pLastMipData = pLevel0->BulkData.Realloc(image.pixelData.size());
+        FMemory::Memcpy(
+            pLastMipData,
+            image.pixelData.data(),
+            image.pixelData.size());
+      }
     }
 
     if (generateMipMaps) {
@@ -238,7 +262,8 @@ TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
 TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
     const CesiumGltf::Model& model,
     const CesiumGltf::Texture& texture,
-    bool sRGB) {
+    bool sRGB,
+    int32 mipBias) {
 
   const CesiumGltf::ExtensionKhrTextureBasisu* pKtxExtension =
       texture.getExtension<CesiumGltf::ExtensionKhrTextureBasisu>();
@@ -365,7 +390,8 @@ TUniquePtr<LoadedTextureResult> loadTextureAnyThreadPart(
       filter,
       TextureGroup::TEXTUREGROUP_World,
       useMipMaps,
-      sRGB);
+      sRGB,
+      mipBias);
 }
 
 UTexture2D* loadTextureGameThreadPart(LoadedTextureResult* pHalfLoadedTexture) {
