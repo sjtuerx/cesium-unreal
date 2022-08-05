@@ -3,6 +3,8 @@
 #include "CesiumBingMapsRasterOverlay.h"
 #include "Cesium3DTilesSelection/BingMapsRasterOverlay.h"
 #include "Cesium3DTilesSelection/Tileset.h"
+#include "ThirdPartyMapsRasterOverlay.h"
+
 
 std::unique_ptr<Cesium3DTilesSelection::RasterOverlay>
 UCesiumBingMapsRasterOverlay::CreateOverlay(
@@ -37,12 +39,12 @@ UCesiumBingMapsRasterOverlay::CreateOverlay(
     break;
   }
 
-  return std::make_unique<Cesium3DTilesSelection::BingMapsRasterOverlay>(
+  return std::make_unique<Cesium3DTilesSelection::FBingMapsRasterOverlay>(
       TCHAR_TO_UTF8(*this->MaterialLayerKey),
       "https://dev.virtualearth.net",
       TCHAR_TO_UTF8(*this->BingMapsKey),
       mapStyle,
-      "",
+      TCHAR_TO_UTF8(*culture),
       CesiumGeospatial::Ellipsoid::WGS84,
       options);
 }

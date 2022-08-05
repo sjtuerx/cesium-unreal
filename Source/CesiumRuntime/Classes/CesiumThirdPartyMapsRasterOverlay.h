@@ -4,10 +4,10 @@
 
 #include "CesiumRasterOverlay.h"
 #include "CoreMinimal.h"
-#include "CesiumBingMapsRasterOverlay.generated.h"
+#include "CesiumThirdPartyMapsRasterOverlay.generated.h"
 
 UENUM(BlueprintType)
-enum class EBingMapsStyle : uint8 {
+enum class EThirdPartyMapsStyle : uint8 {
   Aerial UMETA(DisplayName = "Aerial"),
   AerialWithLabelsOnDemand UMETA(DisplayName = "Aerial with Labels"),
   RoadOnDemand UMETA(DisplayName = "Road"),
@@ -23,7 +23,7 @@ enum class EBingMapsStyle : uint8 {
  * via Cesium ion, use the "Cesium ion Raster Overlay" component instead.
  */
 UCLASS(ClassGroup = (Cesium), meta = (BlueprintSpawnableComponent))
-class CESIUMRUNTIME_API UCesiumBingMapsRasterOverlay
+class CESIUMRUNTIME_API UCesiumThirdPartyMapsRasterOverlay
     : public UCesiumRasterOverlay {
   GENERATED_BODY()
 
@@ -32,22 +32,13 @@ public:
    * The Bing Maps API key to use.
    */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cesium")
-  FString BingMapsKey;
+  FString ThirdPartyMapsKey;
 
   /**
    * The map style to use.
    */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cesium")
-  EBingMapsStyle MapStyle = EBingMapsStyle::Aerial;
-
-   /**
-   * @param culture(Language) The culture to use when requesting Bing Maps
-   * imagery. Not all cultures are supported. See
-   * http://msdn.microsoft.com/en-us/library/hh441729.aspx for information on
-   * the supported cultures.
-   */
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cesium")
-  FString culture = TEXT("zh-CN");
+  EThirdPartyMapsStyle MapStyle = EThirdPartyMapsStyle::Aerial;
 
 protected:
   virtual std::unique_ptr<Cesium3DTilesSelection::RasterOverlay> CreateOverlay(
